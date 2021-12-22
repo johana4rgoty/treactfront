@@ -1,59 +1,64 @@
 import Form from 'react-bootstrap/Form';
-//import "../../styles/styles.css"
-
-import { Container, Table, Button } from "react-bootstrap";
+import React, {useState} from "react";
+import { Container, Table, Button, Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import api from '../../api';
+import BusquedaProyectos from "../components/BusquedaProyectos"
 
-const ListadoUsuarios = ({usuarios, setUsuarios}) => { 
-  const deleteUsuarios = (event) => {
+const ListadoProyectos = ({proyectos, setProyectos}) => { 
+ // const[productosGestion, setProductosGestion] = useState([...productos]);
+  
+  const deleteProyecto = (event) => {
     const id = event.target.id;
-
-    api.usuarios.delete(id);
-    console.log(usuarios);
-    const newUsuario = usuarios.filter((usuario) => usuario._id !== id);
-    setUsuarios([...newUsuario]);
+    api.proyects.delete(id);
+    console.log(proyectos);
+    const newProyects = proyectos.filter(
+      (proyecto) => proyecto._id !== id);
+    setProyectos([...newProyects]);
 };
 
-return( 
-
+return(
     <div>
-      <h3 className="text-center mt-5 mb-5">Listado de Usuarios</h3>
+      <h3 className=" form.control text-center mt-5 mb-5">Listado de proyectos</h3>
       <Container>
+        <Row className = "mb-5  align-items-center justify-content-center ">
+        <Form.Label column="lg" lg={3}>
+          Buscador de proyectos:
+        </Form.Label>
+          <Col xs={4}> 
+            <BusquedaProyectos proyectos={proyectos} setProyectos={setProyectos}/>
+          </Col>
+        </Row>
         <Table striped bordered hover>
           <thead>
             <tr className="text-center">
-              <th>Nombre</th>
-              <th>Apellido</th>
-              <th>Identificacion</th>
-              <th>Correo</th>
-              <th>Rol</th>
-              <th>Estado</th>
-              
+              <th>Nombre Proyecto</th>
+              <th>Objetivo</th>
+              <th>Presupuesto</th>
+              <th>Fecha Inicio</th>
+              <th>Fecha Fin</th>
             </tr>
           </thead>
           <tbody>
-            {usuarios.map((usuario) => {
+            {proyectos.map((proyecto) => {
               return (
-                <tr className="text-center" key={usuario._id}>
-                  <td>{usuario.nombre}</td>
-                  <td>{usuario.apellido}</td>
-                  <td>{usuario.identificacion}</td>
-                  <td>{usuario.correo}</td>
-                  <td>{usuario.rol}</td> 
-                  {/* <td>{usuario.estado}</td> */}
-                  
+                <tr className="text-center" key={proyecto._id}>
+                  <td>{proyecto.title}</td>
+                  <td>{proyecto.objetivo}</td>
+                  <td>{proyecto.presupuesto}</td>
+                  <td>{proyecto.fechaInicio}</td>
+                  <td>{proyecto.fechaFin}</td>
                   <td>
                     <input
                       type="checkbox"
                       className="custom-control-input text-center"
                       id="customCheck1"
-                      checked={usuario.activo}
+                      checked={proyecto.disponible}
                       readOnly
                     />{" "}
                   </td>
                   <td>
-                  <Link to={`/ListadoUsuarios/Edit/${usuario._id}`}>
+                  <Link to={`/ListadoProyectos/Edit/${proyecto._id}`}>
                     <Button
                       variant="warning"
                       //onClick={popProduct}
@@ -75,8 +80,8 @@ return(
 
                     <Button
                       variant="danger"
-                      onClick={deleteUsuarios}
-                      id={usuario._id}
+                      onClick={deleteProyecto}
+                      id={proyecto._id}
                       className="ms-2"
                     >
                       <svg
@@ -106,4 +111,4 @@ return(
 )
 };
 
-export default ListadoUsuarios;
+export default ListadoProyectos;

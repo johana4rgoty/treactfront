@@ -2,63 +2,59 @@ import React, { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { Container, Row, Col, Alert } from "react-bootstrap";
 import api from "../../api";
-import UsuarioForm from "../components/UsuarioForm";
+import ProyectForm from "../components/ProyectForm";
 
-const EditarUsuario = ({ usuarios, setUsuarios }) => {
+const EditarProyecto = ({ proyectos, setProyectos }) => {
   const history = useHistory();
   const [error, setError] = useState();
   const [success, setSuccess] = useState();
-  const { usuarioId } = useParams();
+  const { proyectId } = useParams();
 
-  const [newUsuario, setNewUsuario] = useState({
-    nombre: "", 
-    apellido: "",
-    identificacion: "",
-    correo: "",
-    rol: "",
-    estado: false,     
-    
-    
-    
+  const [newProyect, setNewProyect] = useState({
+    title: "",
+    objetivos: "",
+    presupuesto: "",
+    fechaInicio: "",
+    fechaFin: "",
   });
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await api.usuarios.getUsuario(usuarioId);
-      setNewUsuario(response);
+      const response = await api.proyects.getProyect(proyectId);
+      setNewProyect(response);
     };
 
     fetchData();
-  }, [usuarioId]);
+  }, [proyectId]);
 
   const handleChange = (event) => {
-    setNewUsuario({ ...newUsuario, [event.target.name]: event.target.value });
+    setNewProyect({ ...newProyect, [event.target.name]: event.target.value });
   };
 
   const handleClick = async () => {
-    const apiResponse = await api.usuarios.edit(newUsuario);
+    const apiResponse = await api.proyects.edit(newProyect);
     if (apiResponse.err) {
       setError(apiResponse.err.message);
       console.log(apiResponse.err);
     } else {
       setSuccess(apiResponse);
-      setUsuarios([...usuarios, newUsuario]);
-      history.push("/ListadoUsuarios");
+      setProyectos([...proyectos, newProyect]);
+      history.push("/ListadoProyectos");
     }
   };
 
   return (
     <React.Fragment>
-      <h3 className="text-center mt-5 mb-5">Editar usuarios</h3>
+      <h3 className="text-center mt-5 mb-5">Editar proyectos</h3>
       <Container>
         <Row className="d-flex justify-content-center align-items-center">
-          <Col >
+          <Col xs={6}>
             {error && <Alert variant="danger">{error}</Alert>}
             {success && <Alert variant="success">{success}</Alert>}
-            <UsuarioForm
+            <ProyectForm
               handleChange={handleChange}
               handleClick={handleClick}
-              formValue={newUsuario}
+              formValue={newProyect}
             />
           </Col>
         </Row>
@@ -67,4 +63,4 @@ const EditarUsuario = ({ usuarios, setUsuarios }) => {
   );
 };
 
-export default EditarUsuario;
+export default EditarProyecto;
